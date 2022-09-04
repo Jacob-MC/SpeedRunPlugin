@@ -6,13 +6,12 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
-import org.bukkit.entity.EnderDragon;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.Iterator;
@@ -28,6 +27,15 @@ public class SRPListener implements Listener {
     }
 
     @EventHandler
+
+    public void onDragonDeath(EntityDeathEvent event) {
+        LivingEntity entity = event.getEntity();
+        Player player = entity.getKiller();
+        if (entity.getType() == EntityType.ENDER_DRAGON) {
+            player.sendTitle("§aYou win!", "§aYou have killed the Ender Dragon in ",10, 140, 20);
+        }
+    }
+
     public void onJoin(PlayerJoinEvent event) {
 
         String resetonstarting = SpeedRunPlugin.getConfig().getString("resetonstarting");

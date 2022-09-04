@@ -1,6 +1,6 @@
-name: SpeedRunPlugin
-version: 1.0
-author: Anxxitty
+name: SRP
+version: 1.1
+author: Jacob
 main: fr.anxxitty.srp.SpeedRunPlugin
 api-version: 1.16
 softdepend: [Multiverse-Core, Multiverse-NetherPortals]

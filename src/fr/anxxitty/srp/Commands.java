@@ -11,9 +11,6 @@ import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.EnderDragon;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
@@ -38,7 +35,6 @@ public class Commands implements CommandExecutor {
                 //Kills the dragon if the player is in the end because otherwise there's a bug with the bossbar
                 //I don't like the use of dispatchCommand function so if you know an other way to do it, please let me know
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kill @e[type=minecraft:ender_dragon]");
-
                 //Regenerates the worlds
                 worldManager.deleteWorld("spworld");
                 worldManager.deleteWorld("spnether");
