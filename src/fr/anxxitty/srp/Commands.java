@@ -17,9 +17,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.Iterator;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Commands implements CommandExecutor {
-
+    public static long start;
     private final MultiverseCore core;
     private final MVWorldManager worldManager;
 
@@ -39,7 +41,6 @@ public class Commands implements CommandExecutor {
                 // Checks if speedrun world exists
                 if (worldManager.getMVWorlds().toString().contains("spworld")) {
                     player.sendMessage("§cYou are already in a speedrun! Use the reset command to reset the world, or the endrun command to end the run.");
-                    return true;
                 } else {
                     //deletes worlds
                     worldManager.deleteWorld("spworld");
@@ -87,10 +88,12 @@ public class Commands implements CommandExecutor {
 
                     player.teleport(safeLocation);
 
+                    start = System.currentTimeMillis();
+
                     player.sendMessage("§3Teleported!");
 
-                    return true;
                 }
+                return true;
             }
 
             if (cmd.getName().equalsIgnoreCase("endrun")) {
@@ -155,6 +158,8 @@ public class Commands implements CommandExecutor {
 
                     player.sendMessage("§3Generation finished!");
                     player.sendMessage("§3Teleporting...");
+
+                    start = System.currentTimeMillis();
 
                     player.teleport(safeLocation);
 

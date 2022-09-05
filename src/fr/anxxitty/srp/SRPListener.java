@@ -17,7 +17,7 @@ import org.bukkit.potion.PotionEffect;
 import java.util.Iterator;
 
 public class SRPListener implements Listener {
-
+    
     private final MultiverseCore core;
     private final SpeedRunPlugin SpeedRunPlugin;
     private final MVWorldManager worldManager;
@@ -35,7 +35,18 @@ public class SRPListener implements Listener {
 
         Player player = entity.getKiller();
         if (entity.getType() == EntityType.ENDER_DRAGON) {
-            player.sendTitle("§aYou win!", "§aYou have killed the Ender Dragon!",10, 140, 20);
+            long end = System.currentTimeMillis();
+            //get the start variable from the commands class
+            long start = Commands.start;
+            //calculate the time of completion
+            long seconds = (end - start) / 1000;
+
+            long HH = seconds / 3600;
+            long MM = (seconds % 3600) / 60;
+            long SS = seconds % 60;
+            String timeInHHMMSS = String.format("%02d:%02d:%02d", HH, MM, SS);
+
+            player.sendTitle("§aYou win!", "§aYou have killed the Ender Dragon in " + timeInHHMMSS + "!",10, 140, 20);
 
             Bukkit.getScheduler().runTaskLater(SpeedRunPlugin, () -> {
                 player.sendTitle("§4Run Completed", "§4Deleting Worlds.",10, 140, 20);
