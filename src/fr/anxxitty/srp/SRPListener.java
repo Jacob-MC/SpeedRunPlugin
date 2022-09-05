@@ -1,9 +1,9 @@
 package fr.anxxitty.srp;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.entity.*;
@@ -11,7 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.Iterator;
@@ -20,19 +20,33 @@ public class SRPListener implements Listener {
 
     private final MultiverseCore core;
     private final SpeedRunPlugin SpeedRunPlugin;
+    private final MVWorldManager worldManager;
 
     public SRPListener(MultiverseCore core, SpeedRunPlugin SpeedRunPlugin) {
         this.core = core;
+        this.worldManager = core.getMVWorldManager();
         this.SpeedRunPlugin = SpeedRunPlugin;
     }
 
     @EventHandler
-
+    //listens for the dragon death
     public void onDragonDeath(EntityDeathEvent event) {
         LivingEntity entity = event.getEntity();
+
         Player player = entity.getKiller();
         if (entity.getType() == EntityType.ENDER_DRAGON) {
-            player.sendTitle("§aYou win!", "§aYou have killed the Ender Dragon in ",10, 140, 20);
+            player.sendTitle("§aYou win!", "§aYou have killed the Ender Dragon!",10, 140, 20);
+
+            Bukkit.getScheduler().runTaskLater(SpeedRunPlugin, () -> {
+                player.sendTitle("§4Run Completed", "§4Deleting Worlds.",10, 140, 20);
+            }, 250);
+
+            //Deletes the worlds automatically after the dragon is killed
+            Bukkit.getScheduler().runTaskLater(SpeedRunPlugin, () -> {
+                worldManager.deleteWorld("spworld");
+                worldManager.deleteWorld("spnether");
+                worldManager.deleteWorld("spend");
+            }, 400);
         }
     }
 

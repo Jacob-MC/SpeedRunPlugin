@@ -1,10 +1,16 @@
 name: SRP
-version: 1.1
+version: 1.2
 author: Jacob
 main: fr.anxxitty.srp.SpeedRunPlugin
 api-version: 1.16
 softdepend: [Multiverse-Core, Multiverse-NetherPortals]
 commands:
-  reset:
-    description: "A command for regenerate the map to get ready to a new speedrun"
-    usage: "/reset"
+    startrun:
+        description: "Starts a speedrun."
+        usage: "/startrun"
+    endrun:
+        description: "Ends the speedrun."
+        usage: "/endrun"
+    reset:
+        description: "Resets the speedrun."
+        usage: "/reset"

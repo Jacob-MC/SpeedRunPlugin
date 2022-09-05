@@ -64,7 +64,10 @@ public class SpeedRunPlugin extends JavaPlugin {
         //Link the nether and the end to the overworld
         this.addLinks();
 
+        //registers the commands
         getCommand("reset").setExecutor(new Commands(this.core));
+        getCommand("startrun").setExecutor(new Commands(this.core));
+        getCommand("endrun").setExecutor(new Commands(this.core));
         getServer().getPluginManager().registerEvents(this.pluginListener, this);
 
         //Check if the worlds are created and regen them if needed
