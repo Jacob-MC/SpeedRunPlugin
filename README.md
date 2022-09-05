@@ -1,6 +1,14 @@
 # SpeedRunPlugin
-It's a Spigot plugin that uses the Multiverse API to speedrun minecraft on server !
-This allows you to use the "/reset" command, wich will regenerate your map without restarting the server or disconnecting any player.
+SpeedRunPlugin is a Spigot plugin that uses the Multiverse API to speedrun minecraft on a server!
+You can use the "/startrun" command to start a run, "/endrun" to end a run, and "/reset" to reset a run.
+
+Added features in this fork:
+- "/startrun" command
+- "/endrun" command
+
+Planned Features:
+- Co-op Speedruns
+- Manhunt
 
 You must have Multiverse-Core v4.1.0 or newer and Multiverse-NetherPortals v.4.2.1 or newer in your plugins folder.
 
