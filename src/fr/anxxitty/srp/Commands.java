@@ -2,10 +2,7 @@ package fr.anxxitty.srp;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.WorldType;
+import org.bukkit.*;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.command.Command;
@@ -15,13 +12,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.scoreboard.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class Commands implements CommandExecutor {
-    public static long start;
+    public static long timer;
+
+    public static Scoreboard scoreboard;
     private final MultiverseCore core;
     private final MVWorldManager worldManager;
 
@@ -36,6 +37,12 @@ public class Commands implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] strings) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
+
+            Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+
+            scoreboard.registerNewTeam("player");
+            scoreboard.getTeam("player").addEntry(player.getName());
+            player.setScoreboard(scoreboard);
 
             if (cmd.getName().equalsIgnoreCase("startrun")) {
                 // Checks if speedrun world exists
@@ -88,7 +95,29 @@ public class Commands implements CommandExecutor {
 
                     player.teleport(safeLocation);
 
-                    start = System.currentTimeMillis();
+                    timer = 0;
+
+                    //Starts the timer
+
+                    Objective time = scoreboard.registerNewObjective("Time", "dummy");
+
+                    long HH = timer / 3600;
+                    long MM = (timer % 3600) / 60;
+                    long SS = timer % 60;
+                    String timeInHHMMSS = String.format("%02d:%02d:%02d", HH, MM, SS);
+
+                    time.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+                    time.setDisplayName(ChatColor.GREEN + "Time:");
+                    Objective time1 = scoreboard.registerNewObjective("Time1", "dummy");
+
+                    Bukkit.getScheduler().scheduleSyncRepeatingTask(speedRunPlugin, new Runnable() {
+                        @Override
+                        public void run() {
+                            timer++;
+                            time1.setDisplayName(ChatColor.GREEN + timeInHHMMSS);
+                        }
+                    }, 0, 20);
 
                     player.sendMessage("§3Teleported!");
 
@@ -105,6 +134,9 @@ public class Commands implements CommandExecutor {
                         worldManager.deleteWorld("spworld");
                         worldManager.deleteWorld("spnether");
                         worldManager.deleteWorld("spend");
+                        Bukkit.getScheduler().cancelTasks(speedRunPlugin);
+                        timer = 0;
+                        scoreboard.clearSlot(DisplaySlot.SIDEBAR);
                         player.sendMessage("§3Speedrun ended!");
                     }, 100);
                     return true;
@@ -118,6 +150,10 @@ public class Commands implements CommandExecutor {
                 //Checks if the speedrun world exists
                 if (worldManager.getMVWorlds().toString().contains("spworld")) {
                     player.sendMessage("§3Resetting speedrun! §6/!\\ §4Please don't move during the generation, this may crash the server §6/!\\");
+
+                    //Resets timer
+                    Bukkit.getScheduler().cancelTasks(speedRunPlugin);
+                    timer = 0;
 
                     //Removes all the data about the player (potion effect, health, inventory, advancements...)
                     player.getInventory().clear();
@@ -159,9 +195,29 @@ public class Commands implements CommandExecutor {
                     player.sendMessage("§3Generation finished!");
                     player.sendMessage("§3Teleporting...");
 
-                    start = System.currentTimeMillis();
-
                     player.teleport(safeLocation);
+
+                    //Starts the timer
+
+                    Objective time = scoreboard.registerNewObjective("Time", "dummy");
+
+                    long HH = timer / 3600;
+                    long MM = (timer % 3600) / 60;
+                    long SS = timer % 60;
+                    String timeInHHMMSS = String.format("%02d:%02d:%02d", HH, MM, SS);
+
+                    time.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+                    time.setDisplayName(ChatColor.GREEN + "Time:");
+                    Objective time1 = scoreboard.registerNewObjective("Time1", "dummy");
+
+                    Bukkit.getScheduler().scheduleSyncRepeatingTask(speedRunPlugin, new Runnable() {
+                        @Override
+                        public void run() {
+                            timer++;
+                            time1.setDisplayName(ChatColor.GREEN + timeInHHMMSS);
+                        }
+                    }, 0, 20);
 
                     player.sendMessage("§3Teleported!");
 

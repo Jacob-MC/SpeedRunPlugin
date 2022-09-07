@@ -13,6 +13,8 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.Iterator;
 
@@ -35,11 +37,8 @@ public class SRPListener implements Listener {
 
         Player player = entity.getKiller();
         if (entity.getType() == EntityType.ENDER_DRAGON) {
-            long end = System.currentTimeMillis();
             //get the start variable from the commands class
-            long start = Commands.start;
-            //calculate the time of completion
-            long seconds = (end - start) / 1000;
+            long seconds = Commands.timer;
 
             long HH = seconds / 3600;
             long MM = (seconds % 3600) / 60;
@@ -52,6 +51,10 @@ public class SRPListener implements Listener {
                 player.sendTitle("§4Run Completed", "§4Deleting Worlds.",10, 140, 20);
             }, 250);
 
+            Scoreboard scoreboard = Commands.scoreboard;
+
+            scoreboard.clearSlot(DisplaySlot.SIDEBAR);
+            player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
             //Deletes the worlds automatically after the dragon is killed
             Bukkit.getScheduler().runTaskLater(SpeedRunPlugin, () -> {
                 worldManager.deleteWorld("spworld");
