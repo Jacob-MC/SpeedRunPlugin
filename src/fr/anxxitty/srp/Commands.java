@@ -35,15 +35,17 @@ public class Commands implements CommandExecutor {
                 if (worldManager.getMVWorlds().toString().contains(overworldname)) {
                     player.sendMessage("§cYou are already in a speedrun! Use the reset command to reset the world, or the endrun command to end the run.");
                 } else {
-                    //deletes worlds
-                    worldManager.deleteWorld(overworldname);
-                    worldManager.deleteWorld(nethername);
-                    worldManager.deleteWorld(endname);
+
 
                     player.sendMessage("§3Starting speedrun! §6/!\\ §4Please don't move during the generation, this may crash the server §6/!\\");
 
+                    //deletes worlds
+                    WorldHandler.deleteWorlds(worldManager, player);
+                    //clears stats, inventory, etc
                     WorldHandler.playerHandler(player);
+                    //generates world
                     WorldHandler.worldGenerator(player, overworldname, nethername, endname, worldManager);
+                    //links the worlds
                     WorldHandler.addLinks(netherPortals, overworldname, nethername, endname);
 
                 }
@@ -56,10 +58,7 @@ public class Commands implements CommandExecutor {
                     player.sendMessage("§3Ending speedrun!");
                     //deletes worlds
                     Bukkit.getScheduler().runTaskLater(speedRunPlugin, () -> {
-                        worldManager.deleteWorld(overworldname);
-                        worldManager.deleteWorld(nethername);
-                        worldManager.deleteWorld(endname);
-                        Bukkit.getScheduler().cancelTasks(speedRunPlugin);
+                        WorldHandler.deleteWorlds(worldManager, player);
                         player.sendMessage("§3Speedrun ended!");
                     }, 100);
                 } else {
@@ -73,12 +72,13 @@ public class Commands implements CommandExecutor {
                 if (worldManager.getMVWorlds().toString().contains(overworldname)) {
                     player.sendMessage("§3Resetting speedrun! §6/!\\ §4Please don't move during the generation, this may crash the server §6/!\\");
 
-                    worldManager.deleteWorld(overworldname);
-                    worldManager.deleteWorld(nethername);
-                    worldManager.deleteWorld(endname);
-
+                    //deletes worlds
+                    WorldHandler.deleteWorlds(worldManager, player);
+                    //clears stats, inventory, etc
                     WorldHandler.playerHandler(player);
+                    //generates world
                     WorldHandler.worldGenerator(player, overworldname, nethername, endname, worldManager);
+                    //links the worlds
                     WorldHandler.addLinks(netherPortals, overworldname, nethername, endname);
 
                 } else {

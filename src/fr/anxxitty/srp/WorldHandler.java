@@ -13,6 +13,7 @@ import java.util.Iterator;
 public class WorldHandler {
 
     public static void playerHandler(Player player) {
+        //clears all the player's stats
         player.getInventory().clear();
         player.updateInventory();
         player.setHealth(20.0);
@@ -34,6 +35,7 @@ public class WorldHandler {
     }
 
     public static void worldGenerator(Player player, String overworldname, String nethername, String endname, MVWorldManager worldManager) {
+        //generates the worlds and teleports the player
         worldManager.addWorld(overworldname, World.Environment.NORMAL, null, WorldType.NORMAL, true, null);
         String seed = String.valueOf(worldManager.getMVWorld(overworldname).getSeed());
         worldManager.addWorld(nethername, World.Environment.NETHER, seed, WorldType.NORMAL, true, null);
@@ -55,12 +57,14 @@ public class WorldHandler {
     }
 
     public static void deleteWorlds(MVWorldManager worldManager, Player player) {
+        //deletes the worlds
         worldManager.deleteWorld("spworld-" + player.getUniqueId());
         worldManager.deleteWorld("spnether-" + player.getUniqueId());
         worldManager.deleteWorld("spend-" + player.getUniqueId());
     }
 
     public static void addLinks(MultiverseNetherPortals portals, String s, String s1, String s2) {
+        //links the worlds
         portals.addWorldLink(s, s1, PortalType.NETHER);
         portals.addWorldLink(s1, s, PortalType.NETHER);
         portals.addWorldLink(s, s2, PortalType.ENDER);
