@@ -5,6 +5,7 @@ You can use the "/startrun" command to start a run, "/endrun" to end a run, and 
 Added features in this fork:
 - "/startrun" command
 - "/endrun" command
+- Multiplayer support
 
 Planned Features:
 - Co-op Speedruns
