@@ -2,6 +2,7 @@ package fr.anxxitty.srp;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import org.apache.commons.lang.time.StopWatch;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -11,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 import java.util.Objects;
 
@@ -20,10 +22,16 @@ public class SRPListener implements Listener {
     private final SpeedRunPlugin SpeedRunPlugin;
     private final MVWorldManager worldManager;
 
-    public SRPListener(MultiverseCore core, SpeedRunPlugin SpeedRunPlugin) {
+    private final StopWatch stopWatch;
+
+    private final ScoreboardManager scoreboardManager;
+
+    public SRPListener(MultiverseCore core, SpeedRunPlugin SpeedRunPlugin, StopWatch stopWatch, ScoreboardManager scoreboardManager) {
         this.core = core;
         this.worldManager = core.getMVWorldManager();
         this.SpeedRunPlugin = SpeedRunPlugin;
+        this.stopWatch = stopWatch;
+        this.scoreboardManager = scoreboardManager;
     }
 
     @EventHandler
@@ -33,11 +41,13 @@ public class SRPListener implements Listener {
 
         Player player = entity.getKiller();
         if (entity.getType() == EntityType.ENDER_DRAGON) {
-
-            Objects.requireNonNull(player).sendTitle("§aYou win!", "§aYou have killed the Ender Dragon!",10, 140, 20);
-
+            Objects.requireNonNull(player).sendTitle("§aYou win!", "§aYou have killed the Ender Dragon in " + StopWatchHandler.checkTime(stopWatch) + "!",10, 140, 20);
+            //stops timer
+            StopWatchHandler.stopTimer(stopWatch);
+            //clears scoreboard
+            ScoreboardHandler.clearScoreboard(scoreboardManager, player);
             Bukkit.getScheduler().runTaskLater(SpeedRunPlugin, () -> player.sendTitle("§4Run Completed", "§4Deleting Worlds.",10, 140, 20), 250);
-
+            //deletes worlds
             Bukkit.getScheduler().runTaskLater(SpeedRunPlugin, () -> WorldHandler.deleteWorlds(worldManager, player), 400);
         }
     }

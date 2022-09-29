@@ -3,8 +3,10 @@ package fr.anxxitty.srp;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseNetherPortals.MultiverseNetherPortals;
+import org.apache.commons.lang.time.StopWatch;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -21,6 +23,8 @@ public class SpeedRunPlugin extends JavaPlugin {
 
         this.logger = Bukkit.getLogger();
 
+        ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
+        StopWatch stopWatch = new StopWatch();
         MultiverseCore core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
         MultiverseNetherPortals netherPortals = (MultiverseNetherPortals) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-NetherPortals");
 
@@ -48,12 +52,12 @@ public class SpeedRunPlugin extends JavaPlugin {
         }
 
         MVWorldManager worldManager = core.getMVWorldManager();
-        SRPListener pluginListener = new SRPListener(core, this);
+        SRPListener pluginListener = new SRPListener(core, this, stopWatch, scoreboardManager);
 
         //registers the commands
-        Objects.requireNonNull(getCommand("reset")).setExecutor(new Commands(core, netherPortals));
-        Objects.requireNonNull(getCommand("startrun")).setExecutor(new Commands(core, netherPortals));
-        Objects.requireNonNull(getCommand("endrun")).setExecutor(new Commands(core, netherPortals));
+        Objects.requireNonNull(getCommand("reset")).setExecutor(new Commands(core, netherPortals, stopWatch, scoreboardManager));
+        Objects.requireNonNull(getCommand("startrun")).setExecutor(new Commands(core, netherPortals, stopWatch, scoreboardManager));
+        Objects.requireNonNull(getCommand("endrun")).setExecutor(new Commands(core, netherPortals, stopWatch, scoreboardManager));
         getServer().getPluginManager().registerEvents(pluginListener, this);
 
         //Check if the worlds are created and regen them if needed
