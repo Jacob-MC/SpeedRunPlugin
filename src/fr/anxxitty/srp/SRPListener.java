@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scoreboard.ScoreboardManager;
 
 import java.util.Objects;
@@ -19,17 +20,17 @@ import java.util.Objects;
 public class SRPListener implements Listener {
     
     private final MultiverseCore core;
-    private final SpeedRunPlugin SpeedRunPlugin;
     private final MVWorldManager worldManager;
 
     private final StopWatch stopWatch;
 
     private final ScoreboardManager scoreboardManager;
 
-    public SRPListener(MultiverseCore core, SpeedRunPlugin SpeedRunPlugin, StopWatch stopWatch, ScoreboardManager scoreboardManager) {
+    SpeedRunPlugin speedRunPlugin = SpeedRunPlugin.getPlugin(SpeedRunPlugin.class);
+
+    public SRPListener(MultiverseCore core, StopWatch stopWatch, ScoreboardManager scoreboardManager) {
         this.core = core;
         this.worldManager = core.getMVWorldManager();
-        this.SpeedRunPlugin = SpeedRunPlugin;
         this.stopWatch = stopWatch;
         this.scoreboardManager = scoreboardManager;
     }
@@ -46,21 +47,29 @@ public class SRPListener implements Listener {
             StopWatchHandler.stopTimer(stopWatch);
             //clears scoreboard
             ScoreboardHandler.clearScoreboard(scoreboardManager, player);
-            Bukkit.getScheduler().runTaskLater(SpeedRunPlugin, () -> player.sendTitle("§4Run Completed", "§4Deleting Worlds.",10, 140, 20), 250);
+            Bukkit.getScheduler().runTaskLater(speedRunPlugin, () -> player.sendTitle("§4Run Completed", "§4Deleting Worlds.",10, 140, 20), 250);
             //deletes worlds
-            Bukkit.getScheduler().runTaskLater(SpeedRunPlugin, () -> WorldHandler.deleteWorlds(worldManager, player), 400);
+            Bukkit.getScheduler().runTaskLater(speedRunPlugin, () -> WorldHandler.deleteWorlds(worldManager, player), 400);
         }
     }
 
+    @EventHandler
     public void onJoin(PlayerJoinEvent event) {
 
-        String resetonstarting = SpeedRunPlugin.getConfig().getString("resetonstarting");
+        Player player = event.getPlayer();
+
+        if (player.getWorld().getName().contains(player.getUniqueId().toString())) {
+            StopWatchHandler.resumeTimer(stopWatch);
+            ScoreboardHandler.createScoreboard(scoreboardManager, player, "§3Timer", StopWatchHandler.checkTime(stopWatch));
+
+            Bukkit.getScheduler().scheduleSyncRepeatingTask(speedRunPlugin, () -> ScoreboardHandler.refreshScoreboard(scoreboardManager, player, "§3Timer", StopWatchHandler.checkTime(stopWatch)), 0, 5);
+        }
+
+        String resetonstarting = speedRunPlugin.getConfig().getString("resetonstarting");
 
         try {
             //resets player data only if the map is regenerated at server startup
             if (Objects.requireNonNull(resetonstarting).equalsIgnoreCase("true")) {
-
-                Player player = event.getPlayer();
 
                 //Kills the dragon if the player is in the end because otherwise there's a bug with the bossbar
                 //I don't like the usage of dispatchCommand function so if you know an other way to do it, please let me know
@@ -75,6 +84,17 @@ public class SRPListener implements Listener {
                     player.teleport(location);
                 }
             }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @EventHandler
+    public void onLeave(PlayerQuitEvent event) {
+        try {
+                ScoreboardHandler.clearScoreboard(scoreboardManager, event.getPlayer());
+                StopWatchHandler.suspendTimer(stopWatch);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }

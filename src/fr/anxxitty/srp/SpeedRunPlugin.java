@@ -27,7 +27,6 @@ public class SpeedRunPlugin extends JavaPlugin {
         StopWatch stopWatch = new StopWatch();
         MultiverseCore core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
         MultiverseNetherPortals netherPortals = (MultiverseNetherPortals) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-NetherPortals");
-
         if (core == null) {
             logger.info("[SpeedRunPlugin] Multiverse-Core not found!");
             getServer().getPluginManager().disablePlugin(this);
@@ -52,7 +51,7 @@ public class SpeedRunPlugin extends JavaPlugin {
         }
 
         MVWorldManager worldManager = core.getMVWorldManager();
-        SRPListener pluginListener = new SRPListener(core, this, stopWatch, scoreboardManager);
+        SRPListener pluginListener = new SRPListener(core, stopWatch, scoreboardManager);
 
         //registers the commands
         Objects.requireNonNull(getCommand("reset")).setExecutor(new Commands(core, netherPortals, stopWatch, scoreboardManager));

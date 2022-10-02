@@ -12,6 +12,10 @@ public class StopWatchHandler {
         stopWatch.stop();
     }
 
+    public static void suspendTimer(StopWatch stopWatch) { stopWatch.suspend(); }
+
+    public static void resumeTimer(StopWatch stopWatch) { stopWatch.resume(); }
+
     public static void resetTimer(StopWatch stopWatch) { stopWatch.reset(); }
 
     public static String checkTime(StopWatch stopWatch) {

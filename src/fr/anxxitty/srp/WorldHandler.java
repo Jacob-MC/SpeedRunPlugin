@@ -14,8 +14,6 @@ public class WorldHandler {
 
     public static void playerHandler(Player player) {
         //clears all the player's stats
-        player.getInventory().clear();
-        player.updateInventory();
         player.setHealth(20.0);
         player.setFoodLevel(20);
         for (PotionEffect effect : player.getActivePotionEffects()) {
@@ -61,6 +59,19 @@ public class WorldHandler {
         worldManager.deleteWorld("spworld-" + player.getUniqueId());
         worldManager.deleteWorld("spnether-" + player.getUniqueId());
         worldManager.deleteWorld("spend-" + player.getUniqueId());
+    }
+
+   public static void regenWorlds(MVWorldManager worldManager, Player player) {
+        //regenerates the worlds
+        worldManager.regenWorld("spworld-" + player.getUniqueId(), true, true, "", true);
+        worldManager.regenWorld("spnether-" + player.getUniqueId(), true, true, "", true);
+        worldManager.regenWorld("spend-" + player.getUniqueId(), true, true, "", true);
+    }
+
+    public static void clearInv(Player player) {
+        //clears the player's inventory
+        player.getInventory().clear();
+        player.updateInventory();
     }
 
     public static void addLinks(MultiverseNetherPortals portals, String s, String s1, String s2) {

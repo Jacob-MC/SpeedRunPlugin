@@ -45,7 +45,9 @@ public class Commands implements CommandExecutor {
 
                     player.sendMessage("§3Starting speedrun! §6/!\\ §4Please don't move during the generation, this may crash the server §6/!\\");
 
-                    //clears stats, inventory, etc
+                    //clears player's inventory
+                    WorldHandler.clearInv(player);
+                    //clears stats
                     WorldHandler.playerHandler(player);
                     //generates world
                     WorldHandler.worldGenerator(player, overworldname, nethername, endname, worldManager);
@@ -57,8 +59,7 @@ public class Commands implements CommandExecutor {
                     ScoreboardHandler.createScoreboard(scoreboardManager, player, "§3Timer", StopWatchHandler.checkTime(stopWatch));
 
                     //refreshes the scoreboard to update the time
-                    Bukkit.getScheduler().scheduleSyncRepeatingTask(speedRunPlugin, () -> ScoreboardHandler.refreshScoreboard(scoreboardManager, player, "§3Timer", StopWatchHandler.checkTime(stopWatch)), 0, 1);
-
+                    Bukkit.getScheduler().runTaskTimer(speedRunPlugin, () -> ScoreboardHandler.refreshScoreboard(scoreboardManager, player, "§3Timer", StopWatchHandler.checkTime(stopWatch)), 0, 5);
                 }
                 return true;
             }
@@ -79,6 +80,8 @@ public class Commands implements CommandExecutor {
                         WorldHandler.deleteWorlds(worldManager, player);
                         player.sendMessage("§3Speedrun ended!");
                     }, 100);
+                    //clears player's inventory
+                    WorldHandler.clearInv(player);
                 } else {
                     player.sendMessage("§cThere is no speedrun to end!");
                 }
@@ -99,7 +102,9 @@ public class Commands implements CommandExecutor {
                     ScoreboardHandler.clearScoreboard(scoreboardManager, player);
                     //deletes worlds
                     WorldHandler.deleteWorlds(worldManager, player);
-                    //clears stats, inventory, etc
+                    //clears player's inventory
+                    WorldHandler.clearInv(player);
+                    //clears stats
                     WorldHandler.playerHandler(player);
                     //generates world
                     WorldHandler.worldGenerator(player, overworldname, nethername, endname, worldManager);
@@ -111,7 +116,7 @@ public class Commands implements CommandExecutor {
                     ScoreboardHandler.createScoreboard(scoreboardManager, player, "§3Timer", StopWatchHandler.checkTime(stopWatch));
 
                     //refreshes the scoreboard to update the time
-                    Bukkit.getScheduler().scheduleSyncRepeatingTask(speedRunPlugin, () -> ScoreboardHandler.refreshScoreboard(scoreboardManager, player, "§3Timer", StopWatchHandler.checkTime(stopWatch)), 0, 1);
+                    Bukkit.getScheduler().runTaskTimer(speedRunPlugin, () -> ScoreboardHandler.refreshScoreboard(scoreboardManager, player, "§3Timer", StopWatchHandler.checkTime(stopWatch)), 0, 5);
 
                 } else {
                     player.sendMessage("§cThere is no speedrun to reset!");
