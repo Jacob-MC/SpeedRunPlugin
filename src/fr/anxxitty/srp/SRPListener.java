@@ -92,9 +92,14 @@ public class SRPListener implements Listener {
 
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
+
+        Player player = event.getPlayer();
+
         try {
+            if (player.getWorld().getName().contains(player.getUniqueId().toString())) {
                 ScoreboardHandler.clearScoreboard(scoreboardManager, event.getPlayer());
                 StopWatchHandler.suspendTimer(stopWatch);
+            }
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
