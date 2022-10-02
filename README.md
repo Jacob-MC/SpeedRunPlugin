@@ -6,6 +6,7 @@ Added features in this fork:
 - "/startrun" command
 - "/endrun" command
 - Multiplayer support
+- Timer
 
 Planned Features:
 - Co-op Speedruns
